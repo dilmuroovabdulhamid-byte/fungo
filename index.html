@@ -214,7 +214,7 @@
         <p>Hamyonbop va tezkor donat xizmati</p>
     </div>
 
-    <!-- Profil kartasi (Balanssiz) -->
+    <!-- Profil kartasi -->
     <div class="profile-card">
         <div class="user-info">
             <div class="avatar" id="user-avatar">U</div>
@@ -281,12 +281,18 @@
         tg.expand();
 
         let selectedGame = "";
+        let telegramUserId = "Noma'lum";
+        let telegramUserName = "Foydalanuvchi";
+
         const user = tg.initDataUnsafe?.user;
 
         if (user) {
-            document.getElementById('user-name').innerText = user.first_name || 'Foydalanuvchi';
-            document.getElementById('user-id').innerText = `ID: ${user.id}`;
-            document.getElementById('user-avatar').innerText = (user.first_name || 'U').charAt(0).toUpperCase();
+            telegramUserName = user.first_name || 'Foydalanuvchi';
+            telegramUserId = user.id || 'Noma\'lum';
+            
+            document.getElementById('user-name').innerText = telegramUserName;
+            document.getElementById('user-id').innerText = `ID: ${telegramUserId}`;
+            document.getElementById('user-avatar').innerText = telegramUserName.charAt(0).toUpperCase();
         }
 
         function openOrderModal(gameName, packages) {
@@ -314,19 +320,17 @@
             const selectedPackage = document.getElementById('packageSelect').value;
 
             if (!playerId) {
-                alert("Iltimos, Player ID kiritasiz!");
+                alert("Iltimos, O'yin Player ID kiritasiz!");
                 return;
             }
 
-            const orderData = {
-                game: selectedGame,
-                player_id: playerId,
-                package: selectedPackage
-            };
+            // Telegram lichkangizga yuboriladigan tayyor xabar matni
+            const messageText = `Assalomu alaykum! Men donat qilmoqchiman:%0A%0A🎮 O'yin: ${encodeURIComponent(selectedGame)}%0A📦 Miqdori: ${encodeURIComponent(selectedPackage)}%0A🆔 O'yin ID: ${encodeURIComponent(playerId)}%0A👤 Telegram User ID: ${encodeURIComponent(telegramUserId)}`;
 
-            // Ma'lumotlarni Telegram botga yuborish va Mini App'ni yopish
-            tg.sendData(JSON.stringify(orderData));
-            tg.close();
+            // Lichkangizga otib ketish (@durbekivich)
+            tg.openTelegramLink(`https://t.me/durbekivich?text=${messageText}`);
+            
+            closeOrderModal();
         }
     </script>
 </body>
