@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FUNGO SHOP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            background-color: var(--tg-theme-bg-color, #0f172a);
+            color: var(--tg-theme-text-color, #ffffff);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+    </style>
+</head>
+<body class="p-4 pb-20">
+
+    <!-- Sarlavha / Brand Name -->
+    <div class="text-center mb-5">
+        <h1 class="text-2xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 uppercase">
+            FUNGO SHOP
+        </h1>
+        <p class="text-xs text-gray-400 mt-1">Hamyonbop va tezkor donat xizmati</p>
+    </div>
+
+    <!-- Profil paneli -->
+    <div class="bg-slate-800 rounded-2xl p-4 mb-6 shadow-lg border border-slate-700 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <div id="user-avatar" class="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center font-bold text-xl text-white">
+                U
+            </div>
+            <div>
+                <h2 id="user-name" class="font-bold text-base">Foydalanuvchi</h2>
+                <p id="user-id" class="text-xs text-gray-400">ID: 00000000</p>
+            </div>
+        </div>
+        <div class="text-right">
+            <p class="text-xs text-gray-400">Balans</p>
+            <p class="text-lg font-extrabold text-green-400"><span id="user-balance">0</span> so'm</p>
+            <button onclick="openTopUpModal()" class="mt-1 bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1 rounded-lg transition font-medium">
+                + To'ldirish
+            </button>
+        </div>
+    </div>
+
+    <!-- O'yinlar Ro'yxati -->
+    <h3 class="text-lg font-bold mb-4 flex items-center gap-2">
+        <i class="fa-solid fa-gamepad text-blue-500"></i> O'yinlar do'koni
+    </h3>
+
+    <div class="grid grid-cols-2 gap-4">
+        <!-- PUBG Mobile -->
+        <div onclick="openGameModal('PUBG Mobile', [
+            '60 UC - 13,000 UZS',
+            '120 UC - 26,000 UZS',
+            '180 UC - 39,000 UZS',
+            '325 UC - 59,000 UZS',
+            '385 UC - 72,000 UZS',
+            '660 UC - 117,000 UZS',
+            '720 UC - 130,000 UZS',
+            '985 UC - 175,000 UZS',
+            '1320 UC - 235,000 UZS',
+            '1800 UC - 295,000 UZS',
+            '2125 UC - 355,000 UZS',
+            '3850 UC - 580,000 UZS',
+            '8100 UC - 1,150,000 UZS'
+        ])" 
+             class="bg-slate-800 rounded-xl p-3 border border-slate-700 cursor-pointer hover:border-blue-500 transition text-center">
+            <div class="w-full h-24 bg-gradient-to-tr from-amber-600 to-yellow-400 rounded-lg mb-2 flex items-center justify-center font-black text-xl text-black">
+                PUBG
+            </div>
+            <p class="font-bold text-sm">PUBG Mobile</p>
+            <p class="text-xs text-gray-400">UC to'ldirish</p>
+        </div>
+
+        <!-- Free Fire -->
+        <div onclick="openGameModal('Free Fire', ['100 Алмаз - 14,000 UZS', '310 Алмаз - 40,000 UZS', '520 Алмаз - 65,000 UZS', '1060 Алмаз - 130,000 UZS'])" 
+             class="bg-slate-800 rounded-xl p-3 border border-slate-700 cursor-pointer hover:border-blue-500 transition text-center">
+            <div class="w-full h-24 bg-gradient-to-tr from-red-600 to-orange-500 rounded-lg mb-2 flex items-center justify-center font-black text-xl text-white">
+                FREE FIRE
+            </div>
+            <p class="font-bold text-sm">Free Fire</p>
+            <p class="text-xs text-gray-400">Almaz to'ldirish</p>
+        </div>
+
+        <!-- Mobile Legends -->
+        <div onclick="openGameModal('Mobile Legends', ['86 Diamonds - 20,000 UZS', '172 Diamonds - 40,000 UZS', '257 Diamonds - 60,000 UZS'])" 
+             class="bg-slate-800 rounded-xl p-3 border border-slate-700 cursor-pointer hover:border-blue-500 transition text-center">
+            <div class="w-full h-24 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-lg mb-2 flex items-center justify-center font-black text-xl text-white">
+                MLBB
+            </div>
+            <p class="font-bold text-sm">Mobile Legends</p>
+            <p class="text-xs text-gray-400">Diamonds</p>
+        </div>
+
+        <!-- Roblox -->
+        <div onclick="openGameModal('Roblox', ['80 Robux - 18,000 UZS', '400 Robux - 75,000 UZS', '800 Robux - 140,000 UZS'])" 
+             class="bg-slate-800 rounded-xl p-3 border border-slate-700 cursor-pointer hover:border-blue-500 transition text-center">
+            <div class="w-full h-24 bg-gradient-to-tr from-slate-600 to-slate-900 rounded-lg mb-2 flex items-center justify-center font-black text-xl text-white">
+                ROBLOX
+            </div>
+            <p class="font-bold text-sm">Roblox</p>
+            <p class="text-xs text-gray-400">Robux to'ldirish</p>
+        </div>
+    </div>
+
+    <!-- Buyurtma Oynasi -->
+    <div id="game-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 rounded-2xl w-full max-w-sm p-5 border border-slate-700">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-game-title" class="text-lg font-bold">O'yin nomi</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <label class="block text-xs text-gray-400 mb-1">O'yin ID (Player ID)</label>
+            <input type="text" id="player-id" placeholder="Masalan: 512345678" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm mb-4 focus:outline-none focus:border-blue-500">
+
+            <label class="block text-xs text-gray-400 mb-1">Paketni tanlang</label>
+            <select id="package-select" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-sm mb-6 focus:outline-none focus:border-blue-500">
+            </select>
+
+            <button onclick="submitOrder()" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-bold py-3 rounded-xl transition">
+                Xarid qilish
+            </button>
+        </div>
+    </div>
+
+    <!-- Balans To'ldirish Oynasi -->
+    <div id="topup-modal" class="fixed inset-0 bg-black/80 hidden items-center justify-center p-4 z-50">
+        <div class="bg-slate-800 rounded-2xl w-full max-w-sm p-5 border border-slate-700 text-center">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-bold">Balansni to'ldirish</h3>
+                <button onclick="closeTopUpModal()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            
+            <p class="text-xs text-gray-300 mb-3">Quyidagi karta raqamiga to'lov qiling:</p>
+            
+            <!-- Karta Bloki -->
+            <div class="bg-slate-900 p-4 rounded-xl mb-4 border border-slate-700 text-left">
+                <p class="text-xs text-gray-400 mb-1">Karta raqami (Humo):</p>
+                <p class="text-base font-mono font-bold text-yellow-400 select-all tracking-wider mb-2">9860 1606 0260 2171</p>
+                <p class="text-xs text-gray-300">Karta egasi: <span class="text-white font-bold">S.K</span></p>
+            </div>
+
+            <p class="text-xs text-gray-400 mb-4">
+                To'lov qilgach, chekni (skrinshot) va Telegram ID'ingizni adminga yuboring:
+            </p>
+
+            <a href="https://t.me/durbekivich" id="admin-link" target="_blank" class="block w-full bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl text-sm transition">
+                📩 Adminga Chek Yuborish
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            const user = tg.initDataUnsafe.user;
+            document.getElementById('user-name').innerText = `${user.first_name} ${user.last_name || ''}`;
+            document.getElementById('user-id').innerText = `ID: ${user.id}`;
+            document.getElementById('user-avatar').innerText = user.first_name.charAt(0);
+        }
+
+        let currentGame = '';
+
+        function openGameModal(gameName, packages) {
+            currentGame = gameName;
+            document.getElementById('modal-game-title').innerText = gameName;
+            const select = document.getElementById('package-select');
+            select.innerHTML = '';
+            packages.forEach(pkg => {
+                const opt = document.createElement('option');
+                opt.value = pkg;
+                opt.innerText = pkg;
+                select.appendChild(opt);
+            });
+            document.getElementById('game-modal').classList.remove('hidden');
+            document.getElementById('game-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('game-modal').classList.add('hidden');
+            document.getElementById('game-modal').classList.remove('flex');
+        }
+
+        function openTopUpModal() {
+            document.getElementById('topup-modal').classList.remove('hidden');
+            document.getElementById('topup-modal').classList.add('flex');
+        }
+
+        function closeTopUpModal() {
+            document.getElementById('topup-modal').classList.add('hidden');
+            document.getElementById('topup-modal').classList.remove('flex');
+        }
+
+        function submitOrder() {
+            const playerId = document.getElementById('player-id').value;
+            const selectedPackage = document.getElementById('package-select').value;
+
+            if (!playerId) {
+                tg.showAlert("Iltimos, o'yin ID raqamingizni kiriting!");
+                return;
+            }
+
+            const data = {
+                action: "buy",
+                game: currentGame,
+                player_id: playerId,
+                package: selectedPackage
+            };
+
+            tg.sendData(JSON.stringify(data));
+            closeModal();
+        }
+    </script>
+</body>
+</html>
