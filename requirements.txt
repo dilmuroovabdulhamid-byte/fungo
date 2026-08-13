@@ -1,3 +1,2 @@
-aiogram
-aiohttp
-
+pyTelegramBotAPI
+Flask
