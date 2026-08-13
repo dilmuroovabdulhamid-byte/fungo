@@ -8,7 +8,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 
 BOT_TOKEN = "8529363243:AAF6FeK5N8TVvv9YgaK7uM-RQUUgDi0uEHY"
-ADMIN_ID = 6482915822
+ADMIN_ID = 5802084102
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()
@@ -45,12 +45,17 @@ async def start_cmd(message: types.Message):
     await message.answer(
         f"Xush kelibsiz, {message.from_user.first_name}!\n\n"
         f"💰 **Sizning balansingiz:** {bal:,} so'm\n\n"
-        f"**FUNGO SHOP** do'konidan foydalanish uchun pastdagi menyu tugmasini bosing."
+        f"**FUNGO SHOP** do'konidan foydalanish uchun pastdagi menyu tugmasini bosing.",
+        parse_mode="Markdown"
     )
 
 @dp.message(Command("addbal"))
 async def add_balance_cmd(message: types.Message):
     if message.from_user.id != ADMIN_ID:
+        await message.answer(
+            f"❌ Siz admin emassiz!\nSizning Telegram ID: `{message.from_user.id}`",
+            parse_mode="Markdown"
+        )
         return
 
     try:
@@ -60,18 +65,23 @@ async def add_balance_cmd(message: types.Message):
 
         new_bal = add_balance(target_user_id, amount)
 
-        await message.answer(f"✅ ID: `{target_user_id}` balansiga **{amount:,} so'm** qo'shildi!\nYangi balans: **{new_bal:,} so'm**")
+        await message.answer(
+            f"✅ ID: `{target_user_id}` balansiga **{amount:,} so'm** qo'shildi!\nYangi balans: **{new_bal:,} so'm**",
+            parse_mode="Markdown"
+        )
 
-        try:
-            await bot.send_message(
-                chat_id=target_user_id,
-                text=f"💳 **Balans to'ldirildi!**\n\nHisobingizga **{amount:,} so'm** qo'shildi.\nJoriy balansingiz: **{new_bal:,} so'm**"
-            )
-        except Exception:
-            await message.answer("⚠️ Mijozga xabar yetib bormadi.")
+        if target_user_id != message.from_user.id:
+            try:
+                await bot.send_message(
+                    chat_id=target_user_id,
+                    text=f"💳 **Balans to'ldirildi!**\n\nHisobingizga **{amount:,} so'm** qo'shildi.\nJoriy balansingiz: **{new_bal:,} so'm**",
+                    parse_mode="Markdown"
+                )
+            except Exception:
+                await message.answer("⚠️ Mijozga xabar yetib bormadi.")
 
     except (IndexError, ValueError):
-        await message.answer("❌ Xato format!\nTo'g'ri yozish: `/addbal USER_ID SUMMA`\nMasalan: `/addbal 123456789 50000`", parse_mode="Markdown")
+        await message.answer("❌ Xato format!\nTo'g'ri yozish: `/addbal USER_ID SUMMA`\nMasalan: `/addbal 5802084102 50000`", parse_mode="Markdown")
 
 @dp.message(F.web_app_data)
 async def handle_web_app_data(message: types.Message):
@@ -107,7 +117,8 @@ async def order_done(callback: CallbackQuery):
     try:
         await bot.send_message(
             chat_id=int(user_id), 
-            text=f"🚀 Sizning **{game}** bo'yicha buyurtmangiz muvaffaqiyatli bajarildi! ✅"
+            text=f"🚀 Sizning **{game}** bo'yicha buyurtmangiz muvaffaqiyatli bajarildi! ✅",
+            parse_mode="Markdown"
         )
         await callback.message.edit_text(callback.message.text + "\n\n🟢 **STATUS: Bajarildi**")
     except Exception:
@@ -122,7 +133,6 @@ async def order_cancel(callback: CallbackQuery):
     except Exception:
         pass
 
-# Render portini ochiq ushlab turish uchun mini veb-server
 async def handle_ping(request):
     return web.Response(text="Bot is live!")
 
