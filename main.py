@@ -1,12 +1,34 @@
+import os
 import json
+import threading
+from flask import Flask
+import telebot
 
-# Sizning Telegram ID raqamingiz
-ADMIN_ID = 5802084102  
+# Botingiz va shaxsiy ID ma'lumotlaringiz
+BOT_TOKEN = "8529363243:AAF6FeK5N8TVvv9YgaK7uM-RQUUgDi0uEHY"
+ADMIN_ID = 5802084102
 
+bot = telebot.TeleBot(BOT_TOKEN)
+app = Flask(__name__)
+
+# Render veb-xizmati to'xtab qolmasligi uchun kichik server
+@app.route('/')
+def home():
+    return "FUNGO SHOP Bot is active!"
+
+@bot.message_handler(commands=['start'])
+def start_command(message):
+    bot.send_message(
+        message.chat.id, 
+        f"Assalomu alaykum, {message.from_user.first_name}!\n\n"
+        f"🎮 **FUNGO SHOP** botiga xush kelibsiz.\n"
+        f"O'yinlarga donat qilish uchun pastdagi Mini App tugmasini bosing."
+    )
+
+# Mini App'dan kelgan buyurtmalarni qabul qilish
 @bot.message_handler(content_types=['web_app_data'])
 def handle_web_app_data(message):
     try:
-        # Mini App'dan kelgan buyurtma ma'lumotlarini o'qish
         data = json.loads(message.web_app_data.data)
         
         game = data.get('game')
@@ -17,7 +39,7 @@ def handle_web_app_data(message):
         username = f"@{message.from_user.username}" if message.from_user.username else "Mavjud emas"
         user_id = message.from_user.id
 
-        # 1. Xaridorning o'ziga to'lov rekvizitlarini yuborish
+        # 1. Mijozga karta raqami va chek so'rovini yuborish
         user_msg = (
             f"✅ **Buyurtmangiz qabul qilindi!**\n\n"
             f"🎮 **O'yin:** {game}\n"
@@ -25,11 +47,11 @@ def handle_web_app_data(message):
             f"🆔 **Player ID:** `{player_id}`\n\n"
             f"💳 **To'lov uchun karta raqami:**\n"
             f"`8600000000000000` (Karta egasi ismi)\n\n"
-            f"⚠️ *To'lovni amalga oshirgach, chekni (skrinshotni) shu botga yuboring!*"
+            f"⚠️ *To'lovni amalga oshirgach, chekni (skrinshotni) ushbu botga yuboring!*"
         )
         bot.send_message(message.chat.id, user_msg, parse_mode="Markdown")
 
-        # 2. Sizning shaxsiy Telegramingizga (ADMIN_ID) buyurtmani yuborish
+        # 2. Sizning lichkangizga (@durbekivich) buyurtma xabarini yuborish
         admin_msg = (
             f"🛒 **YANGI BUYURTMA!**\n\n"
             f"👤 **Xaridor:** {user_name} ({username})\n"
@@ -42,3 +64,35 @@ def handle_web_app_data(message):
 
     except Exception as e:
         print(f"Xatolik yuz berdi: {e}")
+
+# Mijoz chek (rasm yoki fayl) yuborganda uni adminga yo'naltirish
+@bot.message_handler(content_types=['photo', 'document'])
+def handle_receipt(message):
+    user_name = message.from_user.first_name
+    username = f"@{message.from_user.username}" if message.from_user.username else "Mavjud emas"
+    user_id = message.from_user.id
+
+    caption = (
+        f"🧾 **YANGI TO'LOV CHEKI!**\n\n"
+        f"👤 **Xaridor:** {user_name} ({username})\n"
+        f"🆔 **User ID:** `{user_id}`"
+    )
+
+    if message.photo:
+        photo_id = message.photo[-1].file_id
+        bot.send_photo(ADMIN_ID, photo_id, caption=caption, parse_mode="Markdown")
+    elif message.document:
+        doc_id = message.document.file_id
+        bot.send_document(ADMIN_ID, doc_id, caption=caption, parse_mode="Markdown")
+
+    bot.send_message(message.chat.id, "✅ Chek qabul qilindi! Operator tez orada tekshirib, xizmatni bajaradi.")
+
+def run_bot():
+    bot.infinity_polling()
+
+if __name__ == '__main__':
+    # Botni orqa fonda yurgizish
+    threading.Thread(target=run_bot, daemon=True).start()
+    # Render portaliga moslashtirilgan portda serverni ishga tushirish
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
